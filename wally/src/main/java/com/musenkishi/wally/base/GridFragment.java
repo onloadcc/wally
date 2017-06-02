@@ -59,7 +59,7 @@ public abstract class GridFragment extends BaseFragment {
 
         gridLayoutManager = new GridLayoutManager(rootView.getContext(), 2);
         gridView.setLayoutManager(gridLayoutManager);
-        gridView.getItemAnimator().setSupportsChangeAnimations(true);
+        //gridView.getItemAnimator().setSupportsChangeAnimations(true);
 
         progressBar = rootView.findViewById(R.id.loader);
         if (progressBar != null) {
@@ -135,8 +135,8 @@ public abstract class GridFragment extends BaseFragment {
         } else if (errorLayout != null) {
 
             int numberOfRetries = (errorLayout.getTag() instanceof Integer) ?
-                    (Integer) errorLayout.getTag()
-                    : 1;
+                (Integer) errorLayout.getTag()
+                : 1;
 
             hideLoader();
             gridView.setVisibility(View.GONE);
@@ -147,9 +147,9 @@ public abstract class GridFragment extends BaseFragment {
 
             if (numberOfRetries >= 3) {
                 TextLinkBuilder backendTextLinkBuilder = new TextLinkBuilder(
-                        errorLayout.getContext(),
-                        R.string.error_backend_check_backend,
-                        R.string.error_backend_check_backend
+                    errorLayout.getContext(),
+                    R.string.error_backend_check_backend,
+                    R.string.error_backend_check_backend
                 );
                 backendTextLinkBuilder.color(getResources().getColor(R.color.Material_Blue_500));
                 backendTextLinkBuilder.onClick(new TextLinkBuilder.OnTextClickedListener() {
@@ -178,8 +178,8 @@ public abstract class GridFragment extends BaseFragment {
                     showLoader();
                     getImages(index, query);
                     int numberOfRetries = (errorLayout.getTag() instanceof Integer) ?
-                            (Integer) errorLayout.getTag()
-                            : 1;
+                        (Integer) errorLayout.getTag()
+                        : 1;
                     numberOfRetries++;
                     errorLayout.setTag(numberOfRetries);
                 }

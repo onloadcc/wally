@@ -36,7 +36,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.musenkishi.wally.BuildConfig;
 import com.musenkishi.wally.R;
 import com.musenkishi.wally.activities.MainActivity;
@@ -44,10 +43,7 @@ import com.musenkishi.wally.adapters.RecyclerSavedImagesAdapter;
 import com.musenkishi.wally.base.GridFragment;
 import com.musenkishi.wally.observers.FileReceiver;
 import com.musenkishi.wally.util.SparseBooleanArrayParcelable;
-
 import java.util.ArrayList;
-
-import de.psdev.licensesdialog.LicensesDialogFragment;
 
 /**
  * SavedImagesFragment is responsible to show the user all the wallpapers that has been saved.
@@ -131,8 +127,8 @@ public class SavedImagesFragment extends GridFragment implements Handler.Callbac
             menuItemFilter.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
-                    final LicensesDialogFragment fragment = LicensesDialogFragment.newInstance(R.raw.notices, false);
-                    fragment.show(getFragmentManager(), null);
+                    //final LicensesDialogFragment fragment = LicensesDialogFragment.newInstance(R.raw.notices, false);
+                    //fragment.show(getFragmentManager(), null);
                     return false;
                 }
             });
@@ -231,11 +227,11 @@ public class SavedImagesFragment extends GridFragment implements Handler.Callbac
                     Uri mImageUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 
                     cursor = contentResolver.query(
-                            mImageUri,
-                            projection,
-                            MediaStore.Images.Media.DATA + " like ? ",
-                            new String[] {"%/Wally/%"},
-                            MediaStore.Audio.Media.DATE_ADDED + " DESC");
+                        mImageUri,
+                        projection,
+                        MediaStore.Images.Media.DATA + " like ? ",
+                        new String[] {"%/Wally/%"},
+                        MediaStore.Audio.Media.DATE_ADDED + " DESC");
 
                     initObserver(cursor);
 
@@ -290,16 +286,16 @@ public class SavedImagesFragment extends GridFragment implements Handler.Callbac
         oldCompList.removeAll(newList);
         if (oldCompList.size() > 0) { //Items removed
             recyclerSavedImagesAdapter.notifyItemRangeRemoved(
-                    oldList.indexOf(oldCompList.get(0)),
-                    oldCompList.size()
+                oldList.indexOf(oldCompList.get(0)),
+                oldCompList.size()
             );
         }
 
         newCompList.removeAll(oldList);
         if (newCompList.size() > 0) { //Items added
             recyclerSavedImagesAdapter.notifyItemRangeInserted(
-                    newList.indexOf(newCompList.get(0)),
-                    newCompList.size()
+                newList.indexOf(newCompList.get(0)),
+                newCompList.size()
             );
         }
     }
