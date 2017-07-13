@@ -5,6 +5,8 @@ Wally is a fast and efficient open source wallpaper application for Android.
 
 ![](assets/wally_logo.png)
 
+![](assets/Wally.gif)
+
 Wally gets its source of images from [Wallhaven][1]. By scraping the website, it provides the user
 with a fast and smooth experience filled with subtle animations and a minimal design. The main goal
 of Wally is to provide the same functionality as the website but in a more mobile friendly way.
