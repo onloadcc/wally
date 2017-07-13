@@ -19,11 +19,10 @@ package com.musenkishi.wally.dataprovider.okhttp;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.data.DataFetcher;
 import com.bumptech.glide.load.model.GlideUrl;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-
 import java.io.IOException;
 import java.io.InputStream;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 
 /**
  * Fetches an {@link InputStream} using the okhttp library.
@@ -72,7 +71,7 @@ public class OkHttpStreamFetcher implements DataFetcher<InputStream> {
     @Override
     public void cancel() {
         if (request != null) {
-            client.cancel(request);
+            //client.cancel(request);
         }
     }
 }

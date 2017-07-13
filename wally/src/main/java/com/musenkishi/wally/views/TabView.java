@@ -133,7 +133,7 @@ public class TabView extends LinearLayout {
         updateHint();
     }
 
-    private void updateHint() {
+    private void    updateHint() {
         boolean needHint = false;
         if (textView == null || textView.getVisibility() == View.GONE) {
             if (!TextUtils.isEmpty(getContentDescription())) {

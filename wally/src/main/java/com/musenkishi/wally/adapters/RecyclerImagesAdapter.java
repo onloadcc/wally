@@ -101,6 +101,7 @@ public class RecyclerImagesAdapter extends RecyclerView.Adapter<RecyclerImagesAd
             RequestListener<String, GlideDrawable> glideDrawableRequestListener = new RequestListener<String, GlideDrawable>() {
                 @Override
                 public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                    e.printStackTrace();
                     return false;
                 }
                 @Override
@@ -202,7 +203,7 @@ public class RecyclerImagesAdapter extends RecyclerView.Adapter<RecyclerImagesAd
         valueAnimators.append(position, valueAnimator);
     }
 
-    public RecyclerImagesAdapter(ArrayList<Image> images, int itemSize) {
+    public  RecyclerImagesAdapter(ArrayList<Image> images, int itemSize) {
         this.images = images;
         this.itemSize = itemSize;
     }

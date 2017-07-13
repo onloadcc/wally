@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -36,158 +37,170 @@ import com.musenkishi.wally.base.BaseFragment;
 import com.musenkishi.wally.base.WallyApplication;
 import com.musenkishi.wally.observers.FileReceiver;
 import com.musenkishi.wally.observers.FiltersChangeReceiver;
+import com.musenkishi.wally.util.PermissionUtils;
 import com.musenkishi.wally.views.TabBarView;
 
 public class MainActivity extends BaseActivity {
 
-    public static final String TAG = "Wally.MainActivity";
-    private static final String STATE_APPBAR_COLOR = TAG + ".AppBar.Color";
-    private static final String STATE_SEARCH_MESSAGES = TAG + ".Search.Messages";
+  public static final String TAG = "Wally.MainActivity";
+  private static final String STATE_APPBAR_COLOR = TAG + ".AppBar.Color";
+  private static final String STATE_SEARCH_MESSAGES = TAG + ".Search.Messages";
 
-    private ViewPager viewPager;
-    private SmartFragmentPagerAdapter pagerAdapter;
-    private TabBarView tabBarView;
-    private FileReceiver fileReceiver;
-    private FiltersChangeReceiver filtersChangeReceiver;
+  private ViewPager viewPager;
+  private SmartFragmentPagerAdapter pagerAdapter;
+  private TabBarView tabBarView;
+  private FileReceiver fileReceiver;
+  private FiltersChangeReceiver filtersChangeReceiver;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+  @Override protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main);
 
-        Log.d(TAG, "onCreate: test");
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setToolbar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setElevation(12.0f);
-            getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-            getSupportActionBar().setCustomView(R.layout.tab_bar);
-            tabBarView = (TabBarView) getSupportActionBar().getCustomView();
-        }
+    Log.d(TAG, "onCreate: test");
+    Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+    setToolbar(toolbar);
+    if (getSupportActionBar() != null) {
+      getSupportActionBar().setElevation(12.0f);
+      getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+      getSupportActionBar().setCustomView(R.layout.tab_bar);
+      tabBarView = (TabBarView) getSupportActionBar().getCustomView();
+    }
 
-        fileReceiver = new FileReceiver();
-        filtersChangeReceiver = new FiltersChangeReceiver();
+    fileReceiver = new FileReceiver();
+    filtersChangeReceiver = new FiltersChangeReceiver();
 
-        viewPager = (ViewPager) findViewById(R.id.fragment_pager);
-        initiatePagerAdapter();
+    viewPager = (ViewPager) findViewById(R.id.fragment_pager);
 
-        viewPager.setAdapter(pagerAdapter);
-        viewPager.setOffscreenPageLimit(4);
-        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                if (tabBarView != null) {
-                    tabBarView.setOffset(positionOffset);
-                    tabBarView.setSelectedTab(position);
-                }
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                if (pagerAdapter != null && pagerAdapter.getRegisteredFragment(position) != null) {
-                    for (int i = 0; i < pagerAdapter.getCount(); i++) {
-                        if (pagerAdapter.getRegisteredFragment(i) != null) {
-                            pagerAdapter.getRegisteredFragment(i).setUserVisibleHint(position == i);
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-            }
-        });
-
+    viewPager.setOffscreenPageLimit(4);
+    viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+      @Override
+      public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
         if (tabBarView != null) {
-            tabBarView.setSelectedTab(0);
+          tabBarView.setOffset(positionOffset);
+          tabBarView.setSelectedTab(position);
         }
+      }
 
-        tabBarView.setOnTabClickedListener(new TabBarView.OnTabClickedListener() {
-            @Override
-            public void onTabClicked(int index) {
-                viewPager.setCurrentItem(index);
+      @Override public void onPageSelected(int position) {
+        if (pagerAdapter != null && pagerAdapter.getRegisteredFragment(position) != null) {
+          for (int i = 0; i < pagerAdapter.getCount(); i++) {
+            if (pagerAdapter.getRegisteredFragment(i) != null) {
+              pagerAdapter.getRegisteredFragment(i).setUserVisibleHint(position == i);
             }
-        });
-
-        if (savedInstanceState != null) {
-            if (savedInstanceState.containsKey(STATE_APPBAR_COLOR)) {
-                colorizeActionBar(savedInstanceState.getInt(STATE_APPBAR_COLOR));
-            }
+          }
         }
+      }
+
+      @Override public void onPageScrollStateChanged(int state) {
+      }
+    });
+
+
+    tabBarView.setOnTabClickedListener(new TabBarView.OnTabClickedListener() {
+      @Override public void onTabClicked(int index) {
+        viewPager.setCurrentItem(index);
+      }
+    });
+
+    if (savedInstanceState != null) {
+      if (savedInstanceState.containsKey(STATE_APPBAR_COLOR)) {
+        colorizeActionBar(savedInstanceState.getInt(STATE_APPBAR_COLOR));
+      }
     }
 
-    private void initiatePagerAdapter() {
-        if (pagerAdapter == null) {
-            pagerAdapter = new SmartFragmentPagerAdapter(getSupportFragmentManager());
-        }
-    }
+    //// TODO: 2017/6/4
+    initiatePagerAdapter();
+    //PermissionUtils.requestMultiPermissions(this, permissionGrant);
+  }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        if (pagerAdapter != null && pagerAdapter.getRegisteredFragment(viewPager.getCurrentItem()) != null) {
-            outState.putInt(STATE_APPBAR_COLOR, ((BaseFragment) pagerAdapter.getRegisteredFragment(viewPager.getCurrentItem())).getAppBarColor());
-        }
-        super.onSaveInstanceState(outState);
+  PermissionUtils.PermissionGrant permissionGrant = new PermissionUtils.PermissionGrant() {
+    @Override public void onPermissionGranted(int requestCode) {
+      initiatePagerAdapter();
     }
+  };
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
+  @Override public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+      @NonNull int[] grantResults) {
+    PermissionUtils.requestPermissionsResult(this, requestCode, permissions, grantResults,
+        permissionGrant);
+    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+  }
+
+  private void initiatePagerAdapter() {
+    if (pagerAdapter == null) {
+      pagerAdapter = new SmartFragmentPagerAdapter(getSupportFragmentManager());
     }
+    viewPager.setAdapter(pagerAdapter);
+    //pagerAdapter.notifyDataSetChanged();
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        registerReceiver(fileReceiver, new IntentFilter(FileReceiver.GET_FILES));
-        registerReceiver(filtersChangeReceiver, new IntentFilter(FiltersChangeReceiver.FILTERS_CHANGED));
+    if (tabBarView != null) {
+      tabBarView.setSelectedTab(0);
     }
+  }
 
-    @Override
-    public void onPause() {
-        unregisterReceiver(fileReceiver);
-        unregisterReceiver(filtersChangeReceiver);
-        super.onPause();
+  @Override protected void onSaveInstanceState(Bundle outState) {
+    if (pagerAdapter != null
+        && pagerAdapter.getRegisteredFragment(viewPager.getCurrentItem()) != null) {
+      outState.putInt(STATE_APPBAR_COLOR, ((BaseFragment) pagerAdapter.getRegisteredFragment(
+          viewPager.getCurrentItem())).getAppBarColor());
     }
+    super.onSaveInstanceState(outState);
+  }
 
-    public void addOnFileChangedListener(FileReceiver.OnFileChangeListener onFileChangeListener) {
-        if (fileReceiver != null) {
-            fileReceiver.addListener(onFileChangeListener);
-        }
+  @Override public boolean onOptionsItemSelected(MenuItem item) {
+    return super.onOptionsItemSelected(item);
+  }
+
+  @Override public void onResume() {
+    super.onResume();
+    registerReceiver(fileReceiver, new IntentFilter(FileReceiver.GET_FILES));
+    registerReceiver(filtersChangeReceiver,
+        new IntentFilter(FiltersChangeReceiver.FILTERS_CHANGED));
+  }
+
+  @Override public void onPause() {
+    unregisterReceiver(fileReceiver);
+    unregisterReceiver(filtersChangeReceiver);
+    super.onPause();
+  }
+
+  public void addOnFileChangedListener(FileReceiver.OnFileChangeListener onFileChangeListener) {
+    if (fileReceiver != null) {
+      fileReceiver.addListener(onFileChangeListener);
     }
+  }
 
-    public void addOnFiltersChangedListener(FiltersChangeReceiver.OnFiltersChangeListener onFiltersChangeListener) {
-        if (filtersChangeReceiver != null) {
-            filtersChangeReceiver.addListener(onFiltersChangeListener);
-        }
+  public void addOnFiltersChangedListener(
+      FiltersChangeReceiver.OnFiltersChangeListener onFiltersChangeListener) {
+    if (filtersChangeReceiver != null) {
+      filtersChangeReceiver.addListener(onFiltersChangeListener);
     }
+  }
 
-    @Override
-    protected void handleReceivedIntent(Context context, Intent intent) {
-        long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0L);
-        if (WallyApplication.getDownloadIDs().containsKey(id)) {
-            WallyApplication.getDownloadIDs().remove(id);
-            if (fileReceiver != null) {
-                Intent fileChangeIntent = new Intent(FileReceiver.GET_FILES);
-                fileReceiver.onReceive(context, fileChangeIntent);
-            }
-            View heartTabImageView = tabBarView.getTab(4).getImageView();
-            startHeartPopoutAnimation(heartTabImageView, Color.WHITE);
-        }
+  @Override protected void handleReceivedIntent(Context context, Intent intent) {
+    long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0L);
+    if (WallyApplication.getDownloadIDs().containsKey(id)) {
+      WallyApplication.getDownloadIDs().remove(id);
+      if (fileReceiver != null) {
+        Intent fileChangeIntent = new Intent(FileReceiver.GET_FILES);
+        fileReceiver.onReceive(context, fileChangeIntent);
+      }
+      View heartTabImageView = tabBarView.getTab(4).getImageView();
+      startHeartPopoutAnimation(heartTabImageView, Color.WHITE);
     }
+  }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK && requestCode == ImageDetailsActivity.REQUEST_EXTRA_TAG) {
-            if (viewPager != null) {
-                final int searchFragmentPosition = 2; // 2 == search fragment
-                viewPager.setCurrentItem(searchFragmentPosition, false);
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data);
+  @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    if (resultCode == RESULT_OK && requestCode == ImageDetailsActivity.REQUEST_EXTRA_TAG) {
+      if (viewPager != null) {
+        final int searchFragmentPosition = 2; // 2 == search fragment
+        viewPager.setCurrentItem(searchFragmentPosition, false);
+      }
     }
+    super.onActivityResult(requestCode, resultCode, data);
+  }
 
-    public TabBarView getTabBarView() {
-        return this.tabBarView;
-    }
-
+  public TabBarView getTabBarView() {
+    return this.tabBarView;
+  }
 }

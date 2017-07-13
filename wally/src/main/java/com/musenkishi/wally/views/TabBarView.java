@@ -45,7 +45,7 @@ public class TabBarView extends LinearLayout {
 
     private OnTabClickedListener onTabClickedListener;
 
-    public interface OnTabClickedListener{
+    public interface    OnTabClickedListener{
         void onTabClicked(int index);
     }
 
@@ -53,7 +53,7 @@ public class TabBarView extends LinearLayout {
         this(context, null);
     }
 
-    public TabBarView(Context context, AttributeSet attrs) {
+    public TabBarView(Context context, AttributeSet attrs)   {
         this(context, attrs, 0);
     }
 

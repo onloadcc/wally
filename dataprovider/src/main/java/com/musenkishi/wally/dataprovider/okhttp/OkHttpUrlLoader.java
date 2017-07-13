@@ -17,15 +17,13 @@
 package com.musenkishi.wally.dataprovider.okhttp;
 
 import android.content.Context;
-
 import com.bumptech.glide.load.data.DataFetcher;
 import com.bumptech.glide.load.model.GenericLoaderFactory;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.ModelLoader;
 import com.bumptech.glide.load.model.ModelLoaderFactory;
-import com.squareup.okhttp.OkHttpClient;
-
 import java.io.InputStream;
+import okhttp3.OkHttpClient;
 
 /**
  * A simple model loader for fetching media over http/https using OkHttp.
@@ -43,7 +41,7 @@ public class OkHttpUrlLoader implements ModelLoader<GlideUrl, InputStream> {
             if (internalClient == null) {
                 synchronized (Factory.class) {
                     if (internalClient == null) {
-                        internalClient = new OkHttpClient();
+                        internalClient = OkHttpCustomUtil.getInstance();
                     }
                 }
             }
@@ -60,7 +58,7 @@ public class OkHttpUrlLoader implements ModelLoader<GlideUrl, InputStream> {
         /**
          * Constructor for a new Factory that runs requests using given client.
          */
-        public Factory(OkHttpClient client) {
+        public  Factory(OkHttpClient client) {
             this.client = client;
         }
 

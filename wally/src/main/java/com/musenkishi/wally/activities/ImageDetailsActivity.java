@@ -944,7 +944,7 @@ public class ImageDetailsActivity extends BaseActivity implements Handler.Callba
                             tagTextView.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    WallyApplication.getSearchFragmentMessages().put(SearchFragment.EXTRA_MESSAGE_TAG, tag.name());
+                                WallyApplication.getSearchFragmentMessages().put(SearchFragment.EXTRA_MESSAGE_TAG, tag.name());
                                     Intent intent = new Intent();
                                     setResult(RESULT_OK, intent);
                                     ImageDetailsActivity.this.finish();

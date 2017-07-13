@@ -84,7 +84,7 @@ public abstract class GridFragment extends BaseFragment {
         progressBar.animate().alpha(1.0f).setDuration(300).start();
     }
 
-    protected void hideLoader() {
+    protected void hideLoader()  {
         progressBar.animate().alpha(0.0f).setDuration(300).start();
     }
 
@@ -166,7 +166,8 @@ public abstract class GridFragment extends BaseFragment {
                 checkBackend.setVisibility(View.GONE);
             }
 
-            TextLinkBuilder textLinkBuilder = new TextLinkBuilder(errorLayout.getContext(), R.string.error_backend_message_text, R.string.error_backend_message_text_link);
+            TextLinkBuilder textLinkBuilder = new TextLinkBuilder(errorLayout.getContext(),
+                R.string.error_backend_message_text, R.string.error_backend_message_text_link);
             textLinkBuilder.color(getResources().getColor(R.color.Material_Blue_500));
             message.setTag(index);
             textLinkBuilder.onClick(new TextLinkBuilder.OnTextClickedListener() {

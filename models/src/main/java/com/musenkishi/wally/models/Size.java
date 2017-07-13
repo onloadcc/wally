@@ -19,7 +19,7 @@ package com.musenkishi.wally.models;
 /**
  * Created by Freddie (Musenkishi) Lust-Hed on 2014-10-01.
  */
-public class Size {
+public class    Size {
 
     private int width;
     private int height;
